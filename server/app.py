@@ -15,20 +15,28 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
-@app.route('/clear')
+@app.route('/clear', methods=['GET'])
 def clear_session():
     session['page_views'] = 0
-    return {'message': '200: Successfully cleared session data.'}, 200
+    return jsonify({'message': '200: Successfully cleared session data.'}), 200
 
-@app.route('/articles')
+@app.route('/articles', methods=['GET'])
 def index_articles():
+    return jsonify({'message': 'List of articles will be here.'})
 
-    pass
-
-@app.route('/articles/<int:id>')
+@app.route('/articles/<int:id>', methods=['GET'])
 def show_article(id):
+    session['page_views'] = session.get('page_views', 0)
 
-    pass
+
+    session['page_views'] += 1
+
+
+    if session['page_views'] <= 3:
+        return jsonify({'message': 'Article content will be here.'})
+
+
+    return jsonify({'message': 'Maximum pageview limit reached'}), 401
 
 if __name__ == '__main__':
     app.run(port=5555)
